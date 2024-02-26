@@ -1,0 +1,90 @@
+---
+title: "FA3 Bayes Theorem"
+author: "Baybayon, Darlyn Antoinette B."
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### 1. A binary communication channel carries data as one of two sets of signals denoted by 0 and 1. Owing to noise, a transmitted 0 is sometimes received as a 1, and a transmitted 1 is sometimes received as a 0. For a given channel, it can be assumed that a transmitted 0 is correctly received with probability 0.95, and a transmitted 1 is correctly received with probability 0.75. Also, 70% of all messages are transmitted as a 0. If a signal is sent, determine the probability that: (a) a 1 was received; (b) a 1 was transmitted given than a 1 was received. 
+
+
+Let r0 be the event that the signal received is 0, r1 be the event that the signal received is 1, t0 be the event that the signal transmitted is 0, and t1 be the event that the signal transmitted is 1. Then from the problem, we can obtain the following:
+```{r}
+p_r0t0 <- 0.95
+p_r1t0 <- (1-p_r0t0)
+p_r1t1 <- 0.75
+p_t0 <- 0.70
+p_t1 <- (1-p_t0)
+```
+
+To find the probability that 1 was received, we must use the law of total probability given by: 
+
+P(r1) = P(r1|t0) x P(t0) + P(r1|t1) x P(t1)
+
+```{r}
+p_r1 <- (p_r1t0)*(p_t0)+(p_r1t1)*(p_t1)
+p_r1
+```
+
+**Therefore, if a signal was sent, the probability that 1 was received is 0.26.**
+
+
+Using Bayes' theorem, we can find the probability that the signal transmitted was 1 given that the signal received was 1 using the formula:
+
+P(t1|r1) = (P(r1|t1) x P(t1)) / P(r1)
+
+```{r}
+p_t1r1 <- (p_r1t1*p_t1)/p_r1
+p_t1r1
+```
+**Therefore, given the probability is about 0.865.**
+
+####  2. There are three employees working at an IT company: Jane, Amy, and Ava, doing 10%, 30%, and 60% of the programming, respectively. 8% of Jane’s work, 5% of Amy’s work, and just 1% of Ava‘s work is in error. What is the overall percentage of error? If a program is found with an error, who is the most likely person to have written it? 
+
+From the problem, we can obtain the following values:
+
+```{r}
+p_jane <- 0.10
+p_amy <- 0.30
+p_ava <- 0.60
+
+p_er_jane <- 0.08
+p_er_amy <- 0.05
+p_er_ava <- 0.01
+
+```
+To find the overall percentage of error, we must use the law of total probability given by:
+
+P(E) = P(jane) x P(E|jane) + P(amy) x P(E|amy) + P(ava) x P(E|ava)
+
+```{r}
+total_error <- p_jane*p_er_jane + p_amy*p_er_amy + p_ava*p_er_ava 
+total_error
+```
+**Therefore, the overall percentage of error is 0.029.**
+
+
+To find which employee is likely responsible if a program has an error, we must apply Bayes' theorem for each possibility: P(jane|E), P(amy|E), and P(ava|E)
+```{r}
+p_jane_er <- (p_er_jane*p_jane)/total_error
+
+p_amy_er <- (p_er_amy*p_amy)/total_error
+
+p_ava_er <- (p_er_ava*p_ava)/total_error
+
+```
+
+```{r, echo=FALSE}
+table <- c("P(jane|E)", "P(amy|E)", "P(ava|E)")
+prob <- c(p_jane_er, p_amy_er, p_ava_er)
+table_mat <- matrix(table, ncol = 1)
+table_df <- as.data.frame(table_mat)
+table_df[, "Probabilities"] <- prob
+
+knitr::kable(table_df)
+```
+
+**From the values obtained above, if a program is found to be with an error, Amy is most likely responsible for it with a probability of about 0.52.**
