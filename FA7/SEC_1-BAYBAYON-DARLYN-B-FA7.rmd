@@ -1,0 +1,116 @@
+---
+title: "FA7 Exponential Distribution"
+author: "Baybayon, Darlyn Antoinette B."
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 1. Records show that job submissions to a computer center have a Poisson distribution with an average of four per minute.
+
+Let T be the time in minutes between submissions. 
+
+P(T < 0.25) = P (the time between submissions is less than 0.25 minute
+(15 seconds)) 
+
+P(T > 0.5) = P (the time between submissions is greater than 0.5 minute
+(30 seconds)) 
+
+P(0.25 <= T <= 1) = P (the time between submissions is between 0.25 and
+1 minute)
+
+With lambda = 4 per minute, use R to obtain:
+
+#### (a) P(T <= 0.25) = P(time between submissions is at most 15 seconds);
+
+```{r}
+lambda <- 4
+time_int <- 0.25
+
+prob_lt_025 <- pexp(time_int, lambda) 
+prob_lt_025
+```
+
+#### (b) P(T > 0.5) = P(time between submissions is greater than 30 seconds);
+
+```{r}
+time_int <- 0.5
+
+prob_lt_05 <- 1- pexp(time_int, lambda) 
+prob_lt_05
+
+```
+
+#### (c) P(0.25 < T < 1) = P(time between submissions is between 15 seconds and 1 minute).
+```{r}
+time_int <- 0.25
+up_lim <- 1
+
+prob_bw_025_1 <- pexp(up_lim, lambda) - pexp(time_int, lambda) 
+prob_bw_025_1
+```
+
+
+
+### 3.  The average rate of job submissions in a computer center is 2 per minute. 
+If it can be assumed that the number of submissions per minute has a Poisson
+distribution, calculate the probability that:
+
+#### (a)  more than two jobs will arrive in a minute; P(X>2) = 1 - P(X<=2)
+
+```{r}
+lambda <- 2
+1-ppois(2, lambda)
+
+```
+
+#### (b)  at least 30 seconds will elapse between any two jobs; P(X >= 0.5)
+
+```{r}
+1- pexp(0.5, lambda) 
+```
+
+#### (c) less than 30 seconds will elapse between jobs; P(X<0.5)
+```{r}
+pexp(0.5, lambda) 
+```
+
+#### (d) a job will arrive in the next 30 seconds, if no jobs have arrived in the last 30 seconds
+P(X<=0.5 | X> 0.5) = P(X<0.5)
+
+```{r}
+pexp(0.5, lambda) 
+```
+
+
+
+### 7.  A website receives an average of 15 visits per hour, which arrive following a Poisson distribution.
+
+
+#### (a) Calculate the probability that at least 10 minutes will elapse without a visit. P(X>0.167)
+```{r}
+lambda <- 15
+1- pexp(0.167, lambda)
+
+```
+#### (b) What is the probability that in any hour, there will be less than eight visits?
+```{r}
+ppois(7, lambda)
+```
+
+#### (c) Suppose that 15 minutes have elapsed since the last visit, what is the probability that a visit will occur in the next 15 minutes.
+P(X<0.25)
+
+```{r}
+pexp(0.25, lambda)
+```
+
+#### (d) Calculate the top quartile, and explain what it means.
+
+```{r}
+qpois(0.75, lambda)
+```
+
+This means that in 75% of the hours, the website shall have 18 or less visits each hour and only 25% of any hour will the website have more than 18 visits. 
