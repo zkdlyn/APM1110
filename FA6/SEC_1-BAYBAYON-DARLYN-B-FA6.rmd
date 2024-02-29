@@ -1,0 +1,97 @@
+---
+title: "FA6 Geometric Distribution"
+author: "Baybayon, Darlyn Antoinette B."
+output: pdf_document
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+### I. Geometric Distribution. Provide an R code for the geometric distribution. The geometric distribution is a probability distribution that models the number of trials required to achieve the first success in a sequence of Bernoulli trials, where each trial has a constant probability of success.
+
+#### 1. Set the probability of success:  p <- 0.2
+
+```{r}
+p <- 0.2
+
+
+```
+
+#### 2. Generate 1000 random variables from the geometric distribution.
+
+```{r}
+x <- rgeom(1000, p)
+```
+
+#### 3. Calculate some basic statistics: mean_x <- mean(x), var_x <- var(x), sd_x <- sd(x)
+
+```{r}
+mean_x <- mean(x)
+var_x <- var(x)
+sd_x <- sd(x)
+
+skew_x <- moments::skewness(x)
+kurt_x <- moments::kurtosis(x)
+```
+
+#### 4. Print the results in item 3 with the following output (string): 
+
+```{r, echo=FALSE}
+print(paste("Number of trials required to achieve first success: ", round(1/p)))
+print(paste("Mean:", round(mean_x, 2)))
+print(paste("Variance:", round(var_x, 2)))
+print(paste("Standard Deviation:", round(sd_x,2)))
+print(paste("Skewness:", round(skew_x,2)))
+print(paste("Kurtosis:", round(kurt_x, 2)))
+
+```
+
+#### 5. Plot the histogram of the results.
+
+```{r, fig.align='center'}
+par(mfrow = c(1,2))
+
+plot(table(x+1)/1000, 
+     xlab = "No. of trials to success", 
+     ylab = "Relative Frequency", 
+     type = "h")
+plot(x+1, dgeom(x, p, log = FALSE), 
+     xlab = "No. of trials to success", 
+     ylab = "Probability", 
+     type = "h")
+
+
+```
+
+
+
+### II.Hypergeometric Distribution.  Consider a plant manufacturing IC chips of which 10% are expected to be defective. The chips are packed in boxes for export. Before transportation, a sample is drawn from each box. Estimate the probability that the sample contains more than 10% defectives, when:
+
+#### 1. A sample of 10 is selected from a box of 40;
+
+```{r}
+p <- 0.10
+n <- 10
+N <- 40
+M <- p*N
+m <- p*M
+
+prob_N40 <- 1- phyper(1, M, N-M, n)
+prob_N40
+```
+#### 2. A sample of 10 is selected from a box of 5000.
+
+```{r}
+N2 <- 5000
+M2 <- p*N2
+m2 <- p*M2
+
+prob_N5000 <- 1- phyper(1, M2, N2-M2, n)
+
+prob_N5000
+
+```
+
