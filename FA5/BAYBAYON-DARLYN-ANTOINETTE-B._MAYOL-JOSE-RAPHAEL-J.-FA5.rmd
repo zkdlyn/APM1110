@@ -1,0 +1,173 @@
+---
+title: "FA5"
+author: "Baybayon, Darlyn Antoinette B. | Mayol, Jose Raphael J."
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### NO. 6
+
+#####  An email message can travel through one of three server routes. The percentage of errors in each of the servers and the percentage of messages that travel through each route are shown in the following table. Assume that the servers are independent. 
+
+
+```{r}
+
+table <- matrix(c(1,40,1,2,25,2,3,35,1.5), ncol = 3, byrow = TRUE)
+colnames(table) <- c("Server", "Percentage of Messages", "Percentage of errors")
+knitr::kable(table)
+```
+
+Let M1, M2, M3 be the event that a message travels through servers 1, 2, and 3, respectively.
+Then P(E|M1), P(E|M2), and P(E|M3) are the percentage of error for the messages. 
+
+a.) What is the probability of receiving an email containing an error?
+
+We can apply the law of total probability and the probability of receiving an email with an error P(E) shall be given by: \
+
+P(E) = P(M1) x P(E|M1) + P(M2) x P(E|M2) + P(M3) x P(E|M3)
+```{r}
+prob_error <- ((0.40*0.01)+(0.25*0.02)+(0.35*0.015))
+prob_error
+```
+
+**The probability of receiving an email with an error is approximately 0.014 or 1.4%.**
+
+b.) What is the probability that a message will arrive without error?
+ 
+This can be obtained by simply getting the complement of P(E), that is P(E').
+
+```{r}
+prob_no_error <- 1- prob_error
+prob_no_error
+```
+**The probability of receiving an email without error is approximately 0.986 or 98.6%.**
+
+c.) If a message arrives without error, what is the probability that it was sent through server 1?
+
+To obtain this probability (P(M1|E)), we apply Bayes' Theorem.
+
+(P(M1|E')) = [P(M1) x P(E'|M1)] / P(E')
+ 
+```{r}
+prob_m1_e <- (0.4*(1-0.01)/prob_no_error)
+prob_m1_e
+```
+**If a message is received without error, there's a probability of approximately 0.40172 or 40.17% that it was sent through server 1.**
+
+
+### NO. 9
+
+##### A software company surveyed managers to determine the probability that they would buy a new graphics package that includes three-dimensional graphics. About 20% of office managers were certain that they would not buy the package, 70% claimed that they would buy, and the others were undecided. Of those who said that they would not buy the package, only 10% said that they were interested in upgrading their computer hardware. Of those interested in buying the graphics package, 40% were also interested in upgrading their computer hardware. Of the undecided, 20% were interested in upgrading their computer hardware. Let A denote the intention of not buying, B the intention of buying, C the undecided, and G the intention of upgrading the computer hardware.
+
+a.) Calculate the probability that a manager chosen at random will not upgrade the computer hardware (P(G')).
+
+b.) Explain what is meant by the posterior probability of B given G, P(B\|G).
+
+c.) Construct a tree diagram and use it to calculate the following probabilities: P(G), P(B\|G), P(B\|G'), P(C\|G), P(C'\|G').
+
+For **(a)**, we will first need to initiate all given values:
+
+```{r}
+P_A <- 0.20  # P(A)
+P_B <- 0.70  # P(B)
+P_C <- 0.10  # P(C)
+
+P_G_given_A <- 0.10  # P(G|A)
+P_G_given_B <- 0.40  # P(G|B)
+P_G_given_C <- 0.20  # P(G|C)
+```
+
+Then, we have to add all unique probabilities of G. In this case, we will make use of P(G\|A), P(G\|B), & P(G\|C). However, we still need to multiply them by P(A), P(B), & P(C) by Bayes' Rule. Then to get P(G'), we have to get the complement of P(G).
+
+```{r}
+P_G <- P_G_given_A * P_A + P_G_given_B * P_B + P_G_given_C * P_C
+P_not_G <- 1 - P_G
+cat("P(G'):",P_not_G,"\n")
+```
+
+Thus, **P(G') = 0.68**.
+
+For **(b)**, the posterior probability of B given G or P(B\|G) is basically *the probability of B happening after G has occurred*. In other words, it is the **updated probability**. The value of P(B\|G) is equal to P(B)\*P(G\|B)/P(G), which in our case is 0.875.
+
+For **(c)**, we have to make use of a tree diagram to calculate P(G), P(B\|G), P(B\|G'), P(C\|G), and P(C'\|G').
+
+```{r}
+# Tree Diagram
+tree <- list(
+  A = c(G = P_G_given_A, not_G = 1 - P_G_given_A),
+  B = c(G = P_G_given_B, not_G = 1 - P_G_given_B),
+  C = c(G = P_G_given_C, not_G = 1 - P_G_given_C)
+)
+
+P_B_given_G <- tree$B["G"] * P_B / P_G  # P(B|G)
+P_B_given_not_G <- tree$B["not_G"] * P_B / P_not_G
+P_C_given_G <- tree$C["G"] * P_C / P_G
+P_C_given_not_G <- tree$C["not_G"] * P_C / P_not_G
+P_not_C_given_not_G <- 1 - P_C_given_not_G
+
+# Table
+probability_table <- data.frame(
+  Event = c("P(G)", "P(G')", "P(B|G)", "P(B|G')", "P(C|G)", "P(C'|G')"),
+  Probability = round(c(P_G, P_not_G, P_B_given_G, P_B_given_not_G, P_C_given_G, P_not_C_given_not_G),4)
+)
+
+knitr::kable(probability_table)
+```
+
+In this table, we have the probabilities we need for (a) and (c). All of the probabilities in the table are rounded to 4 decimal places. We now have the following probabilities: **P(G)** = 32%; **P(G')** = 68%; **P(B\|G)** = 87.5%; **P(B\|G')** = 61.76%; **P(C\|G)** = 6.25%; **P(C'\|G')** = 88.24%.
+
+
+
+### NO. 13
+#####  A malicious spyware can infect a computer system though the Internet or through email. The spyware comes through the Internet 70% of the time and 30% of the time, it gets in through email. If it enters via the Internet the anti-virus detector will detect it with probability 0.6, and via email, it is detected with probability 0.8.
+
+Let D be the event that a spyware is detected in a computer system, I be the event that it entered through the internet, and E be the event that it entered through email.
+
+Thus we have the following probabilities given:
+P(I) = 0.70
+P(E) = 0.30
+P(D|I) = 0.60
+P(D|E) = 0.80
+
+
+a.) What is the probability that this spyware infects the system?
+ 
+To find the probability of a spyware infection, we apply the law of total probability. Note that we are only given the probabilities of spyware detection given their channel of entry (P(D|I) and P(D|E)). If the spyware gets detected, it can not infect the system, therefore, for finding the probability of infection, we simply take the complements of P(D|I) and P(D|E).
+
+P(D') = P(I) x P(D'|I) + P(E) x P(D'|E)
+
+```{r}
+prob_infect <- (0.7*(1-0.6)) + (0.3*(1-0.8))
+prob_infect
+```
+**Therefore, the probability that a spyware infects the system is 0.34 or 34%.**
+
+b.) If the spyware is detected, what is the probability that it came through the Internet?
+ 
+We are already given the probability of detection given the channel of entry (P(D|I) and P(D|E)) which will be used as foundation in finding P(I|D) according to Bayes' theorem.
+
+First, we must also find the overall probability of detection by applying the law of total probability.
+
+P(D) = P(I) x P(D|I) + P(E) x P(D|E)
+
+* This is also the same as the complement of probability of infection (which was obtained prior).
+```{r}
+prob_detect <- (0.7*(0.6)) + (0.3*(0.8))
+prob_detect
+```
+
+Now, we can find the probability that the detected spyware came through internet:
+
+P(I|D) = [P(I) x P(D|I)] / P(D)
+
+```{r}
+prob_internet_detect <- (0.7*0.6)/prob_detect
+prob_internet_detect
+
+```
+
+**Therefore, if a spyware was detected, there is a probability of approximately 0.6364 or 63.64% that it came through the internet.**
